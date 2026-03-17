@@ -1,22 +1,25 @@
-# Google Gemini 2.5 Flash Integration
+import os
+import logging
+import google.generativeai as genai
+from dotenv import load_dotenv
 
-This is the integration for Google Gemini 2.5 Flash within the AI Service of the application.
+load_dotenv()
 
-## Implementation Steps
-1. Initialize Gemini Client
-2. Set up API keys and authentication
-3. Create functions to handle requests and responses
-4. Implement error handling and logging
+logger = logging.getLogger(__name__)
 
-### Example Usage
-```python
-from google_gemini import GeminiClient
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-2.5-flash")
 
-# Initialize the Gemini client
-client = GeminiClient(api_key="YOUR_API_KEY")
 
-# Function to create a new task
-def create_task(data):
-    response = client.create_task(data)
-    return response
-```
+def summarize_note(content: str) -> str:
+    """Use Gemini to produce a concise summary of the given note content."""
+    prompt = (
+        "You are a helpful assistant. Summarize the following note in 2-3 sentences:\n\n"
+        f"{content}"
+    )
+    try:
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as exc:
+        logger.error("Gemini summarization failed: %s", exc)
+        raise
