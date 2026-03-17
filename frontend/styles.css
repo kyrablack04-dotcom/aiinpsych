@@ -193,6 +193,7 @@ button:disabled {
 .note-actions {
     display: flex;
     justify-content: flex-end;
+    gap: 8px;
 }
 
 .delete-button {
@@ -201,6 +202,76 @@ button:disabled {
 
 .delete-button:hover {
     background: #ad4a38;
+}
+
+.note-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(62, 135, 109, 0.12);
+    color: #2c6656;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid rgba(62, 135, 109, 0.25);
+    transition: background-color 0.15s ease, transform 0.15s ease;
+    user-select: none;
+}
+
+.tag:hover {
+    background: rgba(62, 135, 109, 0.22);
+    transform: translateY(-1px);
+}
+
+.active-tag-filter {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(62, 135, 109, 0.1);
+    border: 1px solid rgba(62, 135, 109, 0.25);
+    color: #2c6656;
+    font-size: 0.9rem;
+    width: fit-content;
+}
+
+.active-tag-filter.visible {
+    display: flex;
+}
+
+.tag-filter-clear {
+    padding: 2px 7px;
+    font-size: 0.9rem;
+    line-height: 1;
+    background: transparent;
+    color: #2c6656;
+    border: 1px solid rgba(62, 135, 109, 0.4);
+}
+
+.tag-filter-clear:hover {
+    background: rgba(62, 135, 109, 0.15);
+}
+
+.note-tags-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tags-edit-input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    padding: 8px 12px;
 }
 
 .empty-state {
