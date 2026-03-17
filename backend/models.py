@@ -33,6 +33,39 @@ class Note(Base):
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
     tags = relationship('Tag', secondary=note_tags, backref='notes')
+    summary_record = relationship('NoteSummary', back_populates='note', uselist=False)
+
+    @property
+    def summary(self):
+        if self.summary_record is None:
+            return None
+        return self.summary_record.summary
+
+    @property
+    def summary_updated_at(self):
+        if self.summary_record is None:
+            return None
+        return self.summary_record.generated_at
+
+    @property
+    def summary_model(self):
+        if self.summary_record is None:
+            return None
+        return self.summary_record.model_name
 
     def __repr__(self):
         return f"<Note(id={self.id}, title='{self.title}')>"
+
+
+class NoteSummary(Base):
+    __tablename__ = 'note_summaries'
+
+    id = Column(Integer, primary_key=True)
+    note_id = Column(Integer, ForeignKey('notes.id'), nullable=False, unique=True, index=True)
+    summary = Column(String, nullable=False)
+    generated_at = Column(DateTime, nullable=False)
+    model_name = Column(String, nullable=False)
+    note = relationship('Note', back_populates='summary_record')
+
+    def __repr__(self):
+        return f"<NoteSummary(note_id={self.note_id}, model='{self.model_name}')>"

@@ -67,6 +67,13 @@ function renderNotes(notes, query = '') {
             const content = escapeHtml(note.content);
             const updatedAt = formatDate(note.updated_at);
             const tagChips = renderTagChips(note.tags);
+            const summary = note.summary ? escapeHtml(note.summary) : '';
+            const summaryUpdatedAt = note.summary_updated_at ? formatDate(note.summary_updated_at) : '';
+            const summaryModel = note.summary_model ? escapeHtml(note.summary_model) : 'unknown-model';
+            const summaryBlock = note.summary
+                ? `<section class="note-summary"><p class="note-summary-label">AI summary</p><p class="note-summary-content">${summary}</p><p class="note-summary-meta">Generated ${summaryUpdatedAt} via ${summaryModel}</p></section>`
+                : '';
+            const summaryButtonLabel = note.summary ? 'Regenerate summary' : 'Generate summary';
 
             return `
                 <article class="note" data-note-id="${note.id}">
@@ -78,7 +85,9 @@ function renderNotes(notes, query = '') {
                     </div>
                     <p class="note-content">${content}</p>
                     ${tagChips}
+                    ${summaryBlock}
                     <div class="note-actions">
+                        <button type="button" class="summary-button" data-note-id="${note.id}">${summaryButtonLabel}</button>
                         <button type="button" class="edit-tags-button secondary-button" data-note-id="${note.id}" data-tags="${escapeHtml(JSON.stringify(note.tags || []))}">Edit tags</button>
                         <button type="button" class="delete-button" data-note-id="${note.id}">Delete</button>
                     </div>
@@ -170,6 +179,18 @@ async function deleteNote(noteId) {
     if (!response.ok) {
         throw new Error('Unable to delete the note.');
     }
+}
+
+async function generateSummary(noteId) {
+    const response = await fetch(`${API_BASE_URL}/notes/${noteId}/summary`, {
+        method: 'POST',
+    });
+
+    if (!response.ok) {
+        throw new Error('Unable to generate summary.');
+    }
+
+    return response.json();
 }
 
 function filterByTag(tag) {
@@ -280,6 +301,27 @@ clearSearchButton.addEventListener('click', async () => {
 clearTagFilterButton.addEventListener('click', clearTagFilter);
 
 notesContainer.addEventListener('click', async (event) => {
+    const summaryButton = event.target.closest('.summary-button');
+    if (summaryButton) {
+        const noteId = summaryButton.dataset.noteId;
+        if (!noteId) {
+            return;
+        }
+
+        summaryButton.disabled = true;
+        setStatus('Generating summary...');
+
+        try {
+            await generateSummary(noteId);
+            await loadNotes(searchInput.value);
+            setStatus('Summary generated.');
+        } catch (error) {
+            summaryButton.disabled = false;
+            setStatus(error.message, true);
+        }
+        return;
+    }
+
     const deleteButton = event.target.closest('.delete-button');
     if (deleteButton) {
         const noteId = deleteButton.dataset.noteId;

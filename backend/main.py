@@ -8,11 +8,13 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 try:
+    from .ai_service import generate_note_summary
     from .database import Base, SessionLocal, engine
-    from .models import Note, Tag
+    from .models import Note, NoteSummary, Tag
 except ImportError:
+    from ai_service import generate_note_summary
     from database import Base, SessionLocal, engine
-    from models import Note, Tag
+    from models import Note, NoteSummary, Tag
 
 app = FastAPI()
 
@@ -34,6 +36,9 @@ class NoteResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     tags: list[str] = []
+    summary: str | None = None
+    summary_updated_at: datetime | None = None
+    summary_model: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -43,6 +48,15 @@ class NoteResponse(BaseModel):
         if value and hasattr(value[0], 'name'):
             return [tag.name for tag in value]
         return value
+
+
+class SummaryResponse(BaseModel):
+    note_id: int
+    summary: str
+    generated_at: datetime
+    model_name: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 def get_db() -> Generator[Session, None, None]:
@@ -150,6 +164,50 @@ def update_note_tags(note_id: int, payload: NoteTagsUpdate, db: Session = Depend
     db.commit()
     db.refresh(note)
     return note
+
+
+@app.post("/notes/{note_id}/summary", response_model=SummaryResponse)
+def generate_summary_for_note(note_id: int, db: Session = Depends(get_db)):
+    note = db.get(Note, note_id)
+    if note is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
+
+    summary_text, model_name = generate_note_summary(
+        title=note.title,
+        content=note.content,
+        tags=[tag.name for tag in note.tags],
+    )
+    timestamp = datetime.utcnow()
+
+    summary_record = db.query(NoteSummary).filter(NoteSummary.note_id == note.id).first()
+    if summary_record is None:
+        summary_record = NoteSummary(
+            note_id=note.id,
+            summary=summary_text,
+            generated_at=timestamp,
+            model_name=model_name,
+        )
+        db.add(summary_record)
+    else:
+        summary_record.summary = summary_text
+        summary_record.generated_at = timestamp
+        summary_record.model_name = model_name
+
+    db.commit()
+    db.refresh(summary_record)
+    return summary_record
+
+
+@app.get("/notes/{note_id}/summary", response_model=SummaryResponse)
+def get_note_summary(note_id: int, db: Session = Depends(get_db)):
+    note = db.get(Note, note_id)
+    if note is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
+
+    summary_record = db.query(NoteSummary).filter(NoteSummary.note_id == note.id).first()
+    if summary_record is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Summary not found")
+    return summary_record
 
 
 @app.get("/tags", response_model=list[str])
