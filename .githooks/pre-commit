@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Advisory reminder for project logging discipline:
+# commits should include TODO status updates and changelog updates,
+# but the hook should never block a commit.
+staged_files="$(git diff --cached --name-only)"
+
+need_todo=1
+need_changelog=1
+
+if grep -qx "TODO.md" <<<"$staged_files"; then
+  need_todo=0
+fi
+
+if grep -qx "changelog.md" <<<"$staged_files"; then
+  need_changelog=0
+fi
+
+if [[ $need_todo -eq 1 || $need_changelog -eq 1 ]]; then
+  echo "Reminder: update and stage TODO.md and changelog.md when the change affects tracked work status."
+  if [[ $need_todo -eq 1 ]]; then
+    echo "- TODO.md is not staged"
+  fi
+  if [[ $need_changelog -eq 1 ]]; then
+    echo "- changelog.md is not staged"
+  fi
+fi
+
+exit 0
