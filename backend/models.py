@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, DateTime, Integer, String
 
-Base = declarative_base()
+try:
+    from .database import Base
+except ImportError:
+    from database import Base
 
 class Note(Base):
     __tablename__ = 'notes'
@@ -13,4 +15,4 @@ class Note(Base):
     updated_at = Column(DateTime, nullable=False)
 
     def __repr__(self):
-        return f"<Note(id={self.id}, title='{self.title}')>",
+        return f"<Note(id={self.id}, title='{self.title}')>"
