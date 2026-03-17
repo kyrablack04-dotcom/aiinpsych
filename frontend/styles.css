@@ -1,55 +1,233 @@
-/* Styles for Notes App */
-
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(114, 210, 174, 0.28), transparent 32%),
+        linear-gradient(180deg, #f4efe6 0%, #ebe7df 100%);
+    color: #23303a;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 32px 20px 48px;
 }
 
 h1 {
-    text-align: center;
-    color: #4CAF50;
+    margin: 0;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    line-height: 1.1;
+}
+
+.hero {
+    margin-bottom: 28px;
+    padding: 28px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #1d3a32 0%, #2f5e55 100%);
+    color: #f6f2ea;
+    box-shadow: 0 24px 60px rgba(35, 48, 58, 0.18);
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #b7e7cb;
+}
+
+.subtitle,
+.section-copy {
+    margin: 10px 0 0;
+    color: rgba(246, 242, 234, 0.84);
+}
+
+.panel {
+    margin-top: 24px;
+    padding: 24px;
+    border: 1px solid rgba(35, 48, 58, 0.08);
+    border-radius: 20px;
+    background: rgba(255, 252, 247, 0.9);
+    box-shadow: 0 16px 40px rgba(35, 48, 58, 0.08);
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1.35rem;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.note-form,
+.search-bar {
+    display: grid;
+    gap: 16px;
+}
+
+.field {
+    display: grid;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.field span {
+    font-size: 0.95rem;
+}
+
+input,
+textarea,
+button {
+    font: inherit;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(35, 48, 58, 0.16);
+    border-radius: 14px;
+    background: #fffdf9;
+    color: #23303a;
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus {
+    outline: 2px solid rgba(62, 135, 109, 0.2);
+    border-color: #3e876d;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 999px;
+    background: #3e876d;
+    color: #fffdf9;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    background: #356f5b;
+}
+
+button:disabled {
+    opacity: 0.65;
+    cursor: wait;
+    transform: none;
+}
+
+.search-bar {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+}
+
+.secondary-button {
+    background: #d7ded9;
+    color: #23303a;
+}
+
+.secondary-button:hover {
+    background: #c2ccc5;
+}
+
+.status-message {
+    min-height: 24px;
+    margin: 16px 0 0;
+    color: #4d5b63;
+}
+
+.notes-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 8px;
 }
 
 .note {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 4px;
-    background-color: #fafafa;
+    display: grid;
+    gap: 12px;
+    padding: 18px;
+    border: 1px solid rgba(35, 48, 58, 0.08);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fffefb 0%, #f7f3ec 100%);
 }
 
-.add-note {
+.note-header {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    align-items: flex-start;
+    gap: 16px;
 }
 
-.add-note input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.note-title {
+    margin: 0;
+    font-size: 1.1rem;
 }
 
-.add-note button {
-    padding: 10px 15px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.note-meta {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: #647177;
 }
 
-.add-note button:hover {
-    background-color: #45a049;
+.note-content {
+    margin: 0;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.note-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.delete-button {
+    background: #c85c48;
+}
+
+.delete-button:hover {
+    background: #ad4a38;
+}
+
+.empty-state {
+    padding: 24px;
+    border: 1px dashed rgba(35, 48, 58, 0.18);
+    border-radius: 18px;
+    text-align: center;
+    color: #55636a;
+    background: rgba(255, 252, 247, 0.7);
+}
+
+@media (max-width: 700px) {
+    .container {
+        padding: 20px 14px 32px;
+    }
+
+    .hero,
+    .panel {
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .search-bar {
+        grid-template-columns: 1fr;
+    }
+
+    .note-header {
+        flex-direction: column;
+    }
 }

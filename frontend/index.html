@@ -4,50 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notes App</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
-        }
-        #notes {
-            margin-top: 20px;
-        }
-        .note {
-            background: #fff;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        textarea {
-            width: 100%;
-            height: 150px;
-        }
-        button {
-            padding: 10px 15px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Notes App</h1>
-    </header>
-    <div id="notes">
-        <div class="note">
-            <h3>Note Title</h3>
-            <textarea placeholder="Write your note here..."></textarea>
-            <button>Save Note</button>
-        </div>
-    </div>
+    <main class="container">
+        <header class="hero">
+            <p class="eyebrow">AI in Psych</p>
+            <h1>Notes App</h1>
+            <p class="subtitle">Create, search, and delete notes backed by the FastAPI service.</p>
+        </header>
+
+        <section class="panel">
+            <h2>Add a note</h2>
+            <form id="create-note-form" class="note-form">
+                <label class="field">
+                    <span>Title</span>
+                    <input id="note-title-input" name="title" type="text" maxlength="255" placeholder="Session summary" required>
+                </label>
+                <label class="field">
+                    <span>Content</span>
+                    <textarea id="note-content-input" name="content" rows="6" placeholder="Write your note here..." required></textarea>
+                </label>
+                <button id="create-note-button" type="submit">Save Note</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <div>
+                    <h2>Your notes</h2>
+                    <p class="section-copy">Search by keyword across note titles and content.</p>
+                </div>
+            </div>
+            <form id="search-form" class="search-bar">
+                <input id="search-input" name="query" type="search" placeholder="Search notes by keyword">
+                <button type="submit">Search</button>
+                <button id="clear-search-button" type="button" class="secondary-button">Clear</button>
+            </form>
+            <p id="status-message" class="status-message" aria-live="polite"></p>
+            <div id="notes-container" class="notes-grid"></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
 </body>
 </html>
